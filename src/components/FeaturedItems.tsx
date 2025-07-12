@@ -11,7 +11,7 @@ const featuredItems = [
     size: "M",
     condition: "Like New",
     points: 150,
-    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=500&fit=crop",
+    image: "https://i.etsystatic.com/13481815/r/il/7a3ab6/1384321785/il_794xN.1384321785_6fo0.jpg",
     user: "Sarah M.",
     rating: 4.9,
     tags: ["Vintage", "Denim", "Sustainable"]
@@ -23,7 +23,7 @@ const featuredItems = [
     size: "S",
     condition: "New",
     points: 200,
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=500&fit=crop",
+    image: "https://ekantastudio.com/cdn/shop/products/Nilambari-Magenta.jpg?v=1747396256",
     user: "Emma L.",
     rating: 5.0,
     tags: ["Designer", "Cotton", "Elegant"]
@@ -35,7 +35,7 @@ const featuredItems = [
     size: "L",
     condition: "Used",
     points: 80,
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=500&fit=crop",
+    image: "https://www.zodiaconline.com/media/catalog/product/z/3/z3_t_shirts_polo_ss25_zrs_001_zrs_solid_100_cotton_hsnc_cac_white_00_ab_a_01_c_01_ai.jpg",
     user: "Mike R.",
     rating: 4.7,
     tags: ["Casual", "Cotton", "Comfortable"]
@@ -47,7 +47,7 @@ const featuredItems = [
     size: "M",
     condition: "Like New",
     points: 120,
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=500&fit=crop",
+    image: "https://m.media-amazon.com/images/I/71s9PklnNCL._SY741_.jpg",
     user: "Lisa K.",
     rating: 4.8,
     tags: ["Wool", "Cozy", "Winter"]
