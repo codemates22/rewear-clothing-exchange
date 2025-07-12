@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Heart } from 'lucide-react';
+import { Heart, Lock, Mail, User } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import authIllustration from '@/assets/auth-illustration.svg';
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -139,8 +140,21 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/5 flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center px-4">
+        <div className="hidden md:flex flex-col items-center justify-center space-y-8">
+          <img
+            src={authIllustration}
+            alt="Authentication"
+            className="w-96 h-96 object-contain"
+          />
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-bold text-foreground/90">Join Our Community</h2>
+            <p className="text-muted-foreground max-w-sm">
+              Connect with fashion-forward individuals and participate in sustainable clothing exchanges.
+            </p>
+          </div>
+        </div>
         <div className="flex items-center justify-center mb-8">
           <Heart className="h-10 w-10 text-primary mr-3" />
           <span className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
@@ -162,43 +176,59 @@ const Auth = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               {isSignUp && (
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName" className="flex items-center space-x-2">
+                    <User className="w-4 h-4" />
+                    <span>Full Name</span>
+                  </Label>
                   <Input
                     id="fullName"
                     type="text"
                     placeholder="Enter your full name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    className="pl-10"
                     required
                   />
                 </div>
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="flex items-center space-x-2">
+                  <Mail className="w-4 h-4" />
+                  <span>Email</span>
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10"
                   required
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="flex items-center space-x-2">
+                  <Lock className="w-4 h-4" />
+                  <span>Password</span>
+                </Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10"
                   required
                 />
               </div>
               
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-300" 
+                disabled={loading}
+              >
                 {loading 
                   ? (isSignUp ? 'Creating Account...' : 'Signing In...') 
                   : (isSignUp ? 'Create Account' : 'Sign In')

@@ -1,70 +1,33 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter, Package } from 'lucide-react';
+import { Search, Filter, Package, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
+import { Skeleton } from '@/components/ui/skeleton';
+import { sampleItems, ClothingItem } from '@/data/sample-items';
 
-interface Item {
-  id: string;
-  title: string;
-  description?: string;
-  category: string;
-  item_type: string;
-  size: string;
-  condition: string;
-  tags: string[];
-  images: string[];
-  points_value: number;
-  status: string;
-  created_at: string;
-  profiles: {
-    full_name: string;
-    location: string;
-  } | null;
-}
+
 
 const Browse = () => {
-  const [items, setItems] = useState<Item[]>([]);
-  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [items] = useState<ClothingItem[]>(sampleItems);
+  const [filteredItems, setFilteredItems] = useState<ClothingItem[]>(sampleItems);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [conditionFilter, setConditionFilter] = useState('all');
 
   useEffect(() => {
-    fetchItems();
+    // Simulate loading
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     filterItems();
   }, [items, searchTerm, categoryFilter, conditionFilter]);
-
-  const fetchItems = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('items')
-        .select(`
-          *,
-          profiles!items_user_id_fkey(full_name, location)
-        `)
-        .eq('status', 'available')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching items:', error);
-      } else {
-        setItems((data as any) || []);
-      }
-    } catch (error) {
-      console.error('Error fetching items:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filterItems = () => {
     let filtered = items;
@@ -73,20 +36,21 @@ const Browse = () => {
     if (searchTerm) {
       filtered = filtered.filter(item =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.item_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Category filter
     if (categoryFilter !== 'all') {
-      filtered = filtered.filter(item => item.category === categoryFilter);
+      filtered = filtered.filter(item => item.category.toLowerCase() === categoryFilter.toLowerCase());
     }
 
     // Condition filter
     if (conditionFilter !== 'all') {
-      filtered = filtered.filter(item => item.condition === conditionFilter);
+      filtered = filtered.filter(item => 
+        item.condition.toLowerCase().replace(' ', '_') === conditionFilter.toLowerCase()
+      );
     }
 
     setFilteredItems(filtered);
@@ -97,11 +61,40 @@ const Browse = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/4"></div>
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-6 w-96" />
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-4">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-10 w-48" />
+            </div>
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="h-64 bg-muted rounded"></div>
+                <div key={i} className="group">
+                  <div className="rounded-lg overflow-hidden">
+                    <Skeleton className="aspect-square w-full" />
+                    <div className="p-4 space-y-3">
+                      <Skeleton className="h-6 w-3/4" />
+                      <div className="flex justify-between">
+                        <Skeleton className="h-5 w-20" />
+                        <Skeleton className="h-5 w-20" />
+                      </div>
+                      <div className="flex justify-between">
+                        <Skeleton className="h-4 w-16" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Skeleton className="h-6 w-6 rounded-full" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -137,9 +130,10 @@ const Browse = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="men">Men</SelectItem>
-              <SelectItem value="women">Women</SelectItem>
-              <SelectItem value="kids">Kids</SelectItem>
+              <SelectItem value="outerwear">Outerwear</SelectItem>
+              <SelectItem value="dresses">Dresses</SelectItem>
+              <SelectItem value="tops">Tops</SelectItem>
+              <SelectItem value="bottoms">Bottoms</SelectItem>
             </SelectContent>
           </Select>
 
@@ -151,7 +145,8 @@ const Browse = () => {
               <SelectItem value="all">All Conditions</SelectItem>
               <SelectItem value="new">New</SelectItem>
               <SelectItem value="like_new">Like New</SelectItem>
-              <SelectItem value="used">Used</SelectItem>
+              <SelectItem value="good">Good</SelectItem>
+              <SelectItem value="fair">Fair</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -170,15 +165,16 @@ const Browse = () => {
                 <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-105">
                   <CardContent className="p-0">
                     <div className="aspect-square overflow-hidden rounded-t-lg">
-                      {item.images && item.images.length > 0 ? (
-                        <img
-                          src={item.images[0]}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <Package className="h-12 w-12 text-muted-foreground" />
+                      <img
+                        src={item.images[0]}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      {item.status === 'New' && (
+                        <div className="absolute top-2 right-2">
+                          <Badge className="bg-primary text-white">
+                            <Star className="w-3 h-3 mr-1" /> New
+                          </Badge>
                         </div>
                       )}
                     </div>
@@ -189,17 +185,24 @@ const Browse = () => {
                         <Badge variant="secondary" className="text-xs">
                           {item.category}
                         </Badge>
-                        <span className="text-sm font-medium text-primary">
-                          {item.points_value} pts
-                        </span>
+                        <Badge variant="outline" className="text-xs">
+                          {item.condition}
+                        </Badge>
                       </div>
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span className="capitalize">{item.condition}</span>
                         <span>Size {item.size}</span>
+                        <span>{item.location}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-2 truncate">
-                        by {item.profiles?.full_name || 'Unknown'}
-                      </p>
+                      <div className="mt-3 flex items-center space-x-2">
+                        <img
+                          src={item.owner.avatar}
+                          alt={item.owner.name}
+                          className="w-6 h-6 rounded-full"
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          {item.owner.name}
+                        </span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
